@@ -1,7 +1,10 @@
 async function fetchData() {
     try {
     // const response = await fetch('http://192.168.105.193:5000/data');
-      const response = await fetch('http://192.168.105.45:5000/data');
+      // const response = await fetch('http://192.168.105.45:5000/data');
+
+      // const response = await fetch('http://192.168.141.140:5000/data');
+      const response = await fetch('http://127.0.0.1:5000/data');
       const contentType = response.headers.get("content-type");
   
       if (!response.ok) {

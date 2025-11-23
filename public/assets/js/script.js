@@ -1,8 +1,8 @@
-var [x, y] = [-6.897, 107.635];
+var [x, y] = [-6.895865463274139, 107.76433421404633];
 
 const server = "http://127.0.0.1:5000";
 
-const imageUrl = "6.386.jpg";
+const imageUrl = "kirpay.png";
 
 
 var map = L.map("map", {
@@ -142,8 +142,10 @@ async function cobain(){
       type: "Feature",
       geometry: {
         type: "Point",
-        coordinates: [107.637, -6.897],
+        // coordinates: [107.637, -6.897],
+        coordinates: [107.76433421404633, -6.895865463274139],
         // coordinates: [-6.53, 107.38],
+        // -6.895865463274139, 107.76433421404633
 
       },
       properties: {
@@ -160,7 +162,7 @@ async function cobain(){
       layer.on("click", function () {
         const content = `
           <div style="text-align:center;">
-            <p><strong>ID:</strong> ${feature.id}</p>
+            <p><strong>07.32 5 December 2025 </strong>Human Detected</p>
             <img src="${imageUrl}" alt="Popup Image" style="width:200px; border-radius:8px;" />
           </div>
         `;
