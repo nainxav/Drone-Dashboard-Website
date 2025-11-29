@@ -135,34 +135,102 @@ let draw = new terraDraw.TerraDraw({
 
 draw.start();
 
-async function cobain(){
-  const element2 = [
-    {
-      id: draw.getFeatureId(),
-      type: "Feature",
-      geometry: {
-        type: "Point",
-        // coordinates: [107.637, -6.897],
-        coordinates: [107.76433421404633, -6.895865463274139],
-        // coordinates: [-6.53, 107.38],
-        // -6.895865463274139, 107.76433421404633
+// async function cobain(){
+//   const element2 = [
+//     {
+//       id: draw.getFeatureId(),
+//       type: "Feature",
+//       geometry: {
+//         type: "Point",
+//         // coordinates: [107.637, -6.897],
+//         coordinates: [107.76433421404633, -6.895865463274139],
+//         // coordinates: [-6.53, 107.38],
+//         // -6.895865463274139, 107.76433421404633
 
-      },
-      properties: {
-        mode: "point",
-      },
-      properties2: {
-        d: "sd",
-      },
+//       },
+//       properties: {
+//         mode: "point",
+//       },
+//       properties2: {
+//         d: "sd",
+//       },
+//     },
+//   ];
+
+//   L.geoJSON(element2, {
+//     onEachFeature: function (feature, layer) {
+//       layer.on("click", function () {
+//         const content = `
+//           <div style="text-align:center;">
+//             <p><strong>07.32 5 December 2025 </strong>Human Detected</p>
+//             <img src="${imageUrl}" alt="Popup Image" style="width:200px; border-radius:8px;" />
+//           </div>
+//         `;
+//         L.popup()
+//           .setLatLng(layer.getLatLng())
+//           .setContent(content)
+//           .openOn(map);
+//       });
+//     },
+//   }).addTo(map);
+  
+//   console.log(element2[0].geometry.coordinates);
+//   const bounds2 = L.GeoJSON.coordsToLatLngs([
+//     element2[0].geometry.coordinates,
+//     [107.637, -6.897],
+//   ]);
+//   const bound2 = L.GeoJSON.coordsToLatLng(element2[0].geometry.coordinates);
+  
+//   // console.log(element2.geometry.coordinates);
+//   console.log(element2);
+//   draw.clear();
+//   map.setView(bound2, 19);
+//   // draw.addFeatures(element2);  
+// }
+
+async function getDroneData() {
+  const res = await fetch("http://127.0.0.1:5000/data");
+  const json = await res.json();
+  return json; // array of drone data
+}
+
+
+async function cobain() {
+
+  // 1. Get drone data from backend
+  const droneData = await getDroneData();
+
+  // Pick the latest entry (usually last item)
+  const drone = droneData[droneData.length - 1];
+
+  const lat = drone.latitude;
+  const lon = drone.longitude;
+
+  // 2. Build image file name from your backend timestamp
+  // You MUST get this timestamp from Flask (passed or returned)
+  const timestamp = drone.timestamp || "unknown";  
+  const imageUrl = `/photos/${timestamp}.jpg`;
+
+  // 3. Create GeoJSON point
+  const feature = [{
+    id: draw.getFeatureId(),
+    type: "Feature",
+    geometry: {
+      type: "Point",
+      coordinates: [lon, lat],
     },
-  ];
+    properties: {
+      mode: "point",
+    },
+  }];
 
-  L.geoJSON(element2, {
+  // 4. Add to map with popup
+  L.geoJSON(feature, {
     onEachFeature: function (feature, layer) {
       layer.on("click", function () {
         const content = `
           <div style="text-align:center;">
-            <p><strong>07.32 5 December 2025 </strong>Human Detected</p>
+            <p><strong>${timestamp}</strong> — Human Detected</p>
             <img src="${imageUrl}" alt="Popup Image" style="width:200px; border-radius:8px;" />
           </div>
         `;
@@ -173,20 +241,13 @@ async function cobain(){
       });
     },
   }).addTo(map);
-  
-  console.log(element2[0].geometry.coordinates);
-  const bounds2 = L.GeoJSON.coordsToLatLngs([
-    element2[0].geometry.coordinates,
-    [107.637, -6.897],
-  ]);
-  const bound2 = L.GeoJSON.coordsToLatLng(element2[0].geometry.coordinates);
-  
-  // console.log(element2.geometry.coordinates);
-  console.log(element2);
+
+  // 5. Move map to the drone coordinate
+  map.setView([lat, lon], 19);
+
   draw.clear();
-  map.setView(bound2, 19);
-  // draw.addFeatures(element2);  
 }
+
 
 async function fetchData() {
   try {
