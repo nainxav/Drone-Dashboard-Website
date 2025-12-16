@@ -29,7 +29,9 @@
   "dependencies": {
     "camelcase": "^8.0.0",
     "emoji-regex": "^10.4.0",
+    "express": "^5.2.1",
     "gh-pages": "^4.0.0",
+    "http-proxy-middleware": "^3.0.5",
     "is-arrayish": "^0.3.2",
     "isexe": "^3.1.1",
     "json-parse-better-errors": "^1.0.2",

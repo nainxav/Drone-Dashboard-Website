@@ -2,9 +2,7 @@ var [x, y] = [-6.895865463274139, 107.76433421404633];
 
 const server = "http://127.0.0.1:5000";
 
-
-
-// const imageUrl = "kirpay.png";
+const imageUrl = "kirpay.png";
 
 
 var map = L.map("map", {
@@ -211,22 +209,7 @@ async function cobain() {
   // 2. Build image file name from your backend timestamp
   // You MUST get this timestamp from Flask (passed or returned)
   const timestamp = drone.timestamp || "unknown";  
-  const rawTimestamp = drone.timestamp || null;
-
-//let imageUrl = "/photos/unknown.jpg";
-
-  const date = new Date(rawTimestamp);
-
-  const MM = String(date.getMonth() + 1).padStart(2, "0");
-  const DD = String(date.getDate()).padStart(2, "0");
-  const HH = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  const ss = String(date.getSeconds()).padStart(2, "0");
-
-  const filename = `${MM}-${DD}-${HH}-${mm}-${ss}.jpg`;
-  const imageUrl = `http://127.0.0.1:5000/foto/${filename}`;
-
-
+  const imageUrl = `/photos/${timestamp}.jpg`;
 
   // 3. Create GeoJSON point
   const feature = [{
