@@ -226,6 +226,28 @@ async function cobain() {
   const filename = `${MM}-${DD}-${HH}-${mm}-${ss}.jpg`;
   const imageUrl = `http://127.0.0.1:5000/foto/${filename}`;
 
+  
+// 1. Icon
+  const droneIcon = L.icon({
+  iconUrl: '/assets/images/drone.png',
+  iconSize: [32, 32],
+  iconAnchor: [16, 32],
+  popupAnchor: [0, -32]
+});
+
+// // 2. GeoJSON feature
+// const feature = {
+//   id: draw.getFeatureId(),
+//   type: "Feature",
+//   geometry: {
+//     type: "Point",
+//     coordinates: [lon, lat], // GeoJSON = [lon, lat]
+//   },
+//   properties: {
+//     mode: "point",
+//   },
+// };
+
 
 
   // 3. Create GeoJSON point
@@ -240,6 +262,13 @@ async function cobain() {
       mode: "point",
     },
   }];
+
+  // 3. Render GeoJSON as icon
+  L.geoJSON(feature, {
+    pointToLayer: (geoJsonPoint, latlng) => {
+      return L.marker(latlng, { icon: droneIcon });
+    }
+  }).addTo(map);
 
   // 4. Add to map with popup
   L.geoJSON(feature, {
