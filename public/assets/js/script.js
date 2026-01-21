@@ -479,10 +479,36 @@ async function command(command) {
   console.log(response);
 }
 
+// const armButton = document.querySelector("#armButton");
+// armButton.addEventListener("click", () => command("arm"));
+// const disarm = document.querySelector("#disarmButton");
+// disarm.addEventListener("click", () => command("disarm"));
+// const statusText = document.querySelector("#statusText");
+// if (armButton && disarm && statusText) {
+//   armButton.addEventListener("click", () => {
+//     statusText.textContent = "Currently Armed";
+//   });
+//   disarm.addEventListener("click", () => {
+//     statusText.textContent = "Currently Disarmed";
+//   });
+// }
+
 const armButton = document.querySelector("#armButton");
-armButton.addEventListener("click", () => command("arm"));
-const disarm = document.querySelector("#disarmButton");
-disarm.addEventListener("click", () => command("disarm"));
+const disarmButton = document.querySelector("#disarmButton");
+const statusText = document.querySelector("#statusText");
+
+if (armButton && disarmButton && statusText) {
+  armButton.addEventListener("click", () => {
+    command("arm");
+    statusText.textContent = "Currently Armed";
+  });
+
+  disarmButton.addEventListener("click", () => {
+    command("disarm");
+    statusText.textContent = "Currently Disarmed";
+  });
+}
+
 
 const motor1Button = document.querySelector("#motor1Button");
 motor1Button.addEventListener("click", () => command("testmotor,1,15"));
@@ -492,6 +518,27 @@ const motor3Button = document.querySelector("#motor3Button");
 motor3Button.addEventListener("click", () => command("testmotor,3,15"));
 const motor4Button = document.querySelector("#motor4Button");
 motor4Button.addEventListener("click", () => command("testmotor,4,15"));
+
+const gpsForm = document.getElementById("gpsForm");
+gpsForm.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  const latitude  = document.getElementById("latitude").value.trim();
+  const longitude = document.getElementById("longitude").value.trim();
+  const altitude  = document.getElementById("altitude").value.trim();
+
+  if (!latitude || !longitude || !altitude) {
+    alert("Semua field wajib diisi");
+    return;
+  }
+
+  const cmd = `goto,${altitude},${latitude},${longitude}`;
+
+  console.log("Send command:", cmd);
+  command(cmd);
+  gpsForm.reset();
+});
+
 
 window.addEventListener("DOMContentLoaded", () => {
   setInterval(fetchData, 3000);

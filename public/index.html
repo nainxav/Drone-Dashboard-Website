@@ -182,7 +182,7 @@
             </div>
           </nav>
 
-          <section x-show="currentSidebarTab == 'messagesTab'" class="px-4 py-6">
+          <!-- <section x-show="currentSidebarTab == 'messagesTab'" class="px-4 py-6">
             <h2 class="text-xl">Control Panel</h2>
             <br>
             <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" id="armButton">Arm</button>
@@ -193,7 +193,208 @@
             <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" id="motor2Button">Propeller 2</button>
             <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" id="motor3Button">Propeller 3</button>
             <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" id="motor4Button">Propeller 4</button>
-          </section>
+          </section> -->
+
+<aside class="w-80 h-screen bg-white overflow-hidden">
+  <section
+    x-show="currentSidebarTab == 'messagesTab'"
+    class="h-full px-4 py-6 overflow-y-auto">          <!-- Header -->
+          <div class="mb-4">
+            <h2 class="text-2xl font-bold text-gray-800">Drone Control Panel</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage arming and propeller controls</p>
+          </div>
+
+          <!-- Arming Section -->
+          <div class="mb-4">
+            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">System Status</h3>
+            <div class="flex items-center space-x-4 mb-4">
+              <div class="status-indicator w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+              <span class="text-sm font-medium text-gray-600 dark:text-gray-400" id="statusText">Currently Disarmed</span>
+            </div>
+            <div class="flex space-x-2">
+              <button type="button" id="armButton" 
+                      class="flex-1 px-6 py-3.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-gray-600 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-900">
+                <div class="flex items-center justify-center text-xs h-12">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Arm
+                </div>
+              </button>
+              <button type="button" id="disarmButton" 
+                      class="flex-1 px-6 py-3.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-gray-600 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
+                <div class="flex items-center justify-center text-xs h-12">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                  </svg>
+                  Disarm
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Propeller Controls -->
+          <div class="py-6">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Propeller Controls</h3>
+              <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full">
+                4 Motors
+              </span>
+            </div>
+            
+            <div class="space-y-2">
+              <button type="button" id="motor1Button" 
+                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
+                <div class="text-center">
+                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
+                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Front Left</span>
+                </div>
+              </button>
+
+              <button type="button" id="motor2Button" 
+                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
+                <div class="text-center">
+                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
+                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Front Right</span>
+                </div>
+              </button>
+
+              <button type="button" id="motor3Button" 
+                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
+                <div class="text-center">
+                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
+                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rear Left</span>
+                </div>
+              </button>
+
+              <button type="button" id="motor4Button" 
+                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
+                <div class="text-center">
+                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 dark:from-blue-900/30 dark:to-blue-800/20 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                    </svg>
+                  </div>
+                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rear Right</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <!-- GPS Coordinates Input Section -->
+          <div class="mt-10 pt-8 border-t border-gray-200 dark:border-gray-700">
+          <div class="mt-10 pt-8 border-t border-gray-200 bg-white rounded-2xl p-2">
+            <div class="flex items-center justify-between mb-6">
+              <h3 class="text-lg font-semibold text-gray-700">
+                GPS Coordinates
+              </h3>
+              <span class="py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
+                Waypoint
+              </span>
+            </div>
+
+            <!-- FORM -->
+            <form id="gpsForm" class="space-y-2">
+              <!-- Latitude -->
+              <div>
+                <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">
+                  Latitude
+                </label>
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="latitude"
+                    name="latitude"
+                    inputmode="decimal"
+                    pattern="^-?\d+(\.\d+)?$"
+                    required
+                    class="pl-10 w-full px-4 py-3
+                          bg-white border border-gray-300
+                          rounded-xl text-gray-800
+                          focus:ring-2 focus:ring-purple-500
+                          focus:border-purple-500 transition-all"
+                    placeholder="contoh: -6.9734">
+                </div>
+              </div>
+
+              <!-- Longitude -->
+              <div>
+                <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">
+                  Longitude
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  </div>
+                  <input
+                    type="text"
+                    id="longitude"
+                    name="longitude"
+                    inputmode="decimal"
+                    pattern="^-?\d+(\.\d+)?$"
+                    required
+                    class="pl-10 w-full px-4 py-3
+                          bg-white border border-gray-300
+                          rounded-xl text-gray-800
+                          focus:ring-2 focus:ring-purple-500
+                          focus:border-purple-500 transition-all"
+                    placeholder="contoh: 107.6098">
+                </div>
+              </div>
+
+              <!-- Altitude -->
+              <div>
+                <label for="altitude" class="block text-sm font-medium text-gray-700 mb-1">
+                  Altitude (meters)
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  </div>
+                  <input
+                    type="text"
+                    id="altitude"
+                    name="altitude"
+                    inputmode="numeric"
+                    pattern="^\d+(\.\d+)?$"
+                    required
+                    class="pl-10 w-full px-4 py-3
+                          bg-white border border-gray-300
+                          rounded-xl text-gray-800
+                          focus:ring-2 focus:ring-purple-500
+                          focus:border-purple-500 transition-all"
+                    placeholder="contoh: 120">
+                </div>
+              </div>
+
+              <!-- SUBMIT -->
+              <button
+                type="submit"
+                class="w-full mt-6 px-6 py-3 group relative p-5 bg-gradient-to-br from-gray-50 to-white dark:from-gray-800 dark:to-gray-900 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
+                <div class="flex items-center justify-centerv text-sm h-12">
+                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M5 13l4 4L19 7" />
+                  </svg>
+                  Submit Waypoint
+                </div>
+              </button>
+            </form>
+          </div>
+
+
+        </section>
+      </aside>
 
           <section x-show="currentSidebarTab == 'notificationsTab'" class="px-4 py-6">
             <h2 class="text-xl">Notifications</h2>
