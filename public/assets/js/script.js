@@ -197,101 +197,191 @@ async function getDroneData() {
 }
 
 
+// async function cobain() {
+
+//   // 1. Get drone data from backend
+//   const droneData = await getDroneData();
+
+//   // Pick the latest entry (usually last item)
+//   const drone = droneData[droneData.length - 1];
+
+//   const lat = drone.latitude;
+//   const lon = drone.longitude;
+
+//   // 2. Build image file name from your backend timestamp
+//   // You MUST get this timestamp from Flask (passed or returned)
+//   const timestamp = drone.timestamp || "unknown";  
+//   const rawTimestamp = drone.timestamp || null;
+
+// //let imageUrl = "/photos/unknown.jpg";
+
+//   const date = new Date(rawTimestamp);
+
+//   const MM = String(date.getMonth() + 1).padStart(2, "0");
+//   const DD = String(date.getDate()).padStart(2, "0");
+//   const HH = String(date.getHours()).padStart(2, "0");
+//   const mm = String(date.getMinutes()).padStart(2, "0");
+//   const ss = String(date.getSeconds()).padStart(2, "0");
+
+//   const filename = `${MM}-${DD}-${HH}-${mm}-${ss}.jpg`;
+//   const imageUrl = `http://127.0.0.1:5000/foto/${filename}`;
+
+  
+// // 1. Icon
+//   const droneIcon = L.icon({
+//   iconUrl: '/assets/images/drone.png',
+//   iconSize: [32, 32],
+//   iconAnchor: [16, 32],
+//   popupAnchor: [0, -32]
+// });
+
+// // // 2. GeoJSON feature
+// // const feature = {
+// //   id: draw.getFeatureId(),
+// //   type: "Feature",
+// //   geometry: {
+// //     type: "Point",
+// //     coordinates: [lon, lat], // GeoJSON = [lon, lat]
+// //   },
+// //   properties: {
+// //     mode: "point",
+// //   },
+// // };
+
+
+
+//   // 3. Create GeoJSON point
+//   const feature = [{
+//     id: draw.getFeatureId(),
+//     type: "Feature",
+//     geometry: {
+//       type: "Point",
+//       coordinates: [lon, lat],
+//     },
+//     properties: {
+//       mode: "point",
+//     },
+//   }];
+
+//   // 3. Render GeoJSON as icon
+//   L.geoJSON(feature, {
+//     pointToLayer: (geoJsonPoint, latlng) => {
+//       return L.marker(latlng, { icon: droneIcon });
+//     }
+//   }).addTo(map);
+
+//   // 4. Add to map with popup
+//   L.geoJSON(feature, {
+//     onEachFeature: function (feature, layer) {
+//       layer.on("click", function () {
+//         const content = `
+//           <div style="text-align:center;">
+//             <p><strong>${timestamp}</strong> — Human Detected</p>
+//             <img src="${imageUrl}" alt="Popup Image" style="width:200px; border-radius:8px;" />
+//           </div>
+//         `;
+//         L.popup()
+//           .setLatLng(layer.getLatLng())
+//           .setContent(content)
+//           .openOn(map);
+//       });
+//     },
+//   }).addTo(map);
+
+//   // 5. Move map to the drone coordinate
+//   map.setView([lat, lon], 19);
+
+//   draw.clear();
+// }
+
+let droneMarker = null;          // icon drone (1)
+let detectionLayer = L.layerGroup().addTo(map); // titik deteksi (banyak)
+
 async function cobain() {
 
-  // 1. Get drone data from backend
+  // ===============================
+  // 1. AMBIL DATA DRONE
+  // ===============================
   const droneData = await getDroneData();
+  if (!droneData || droneData.length === 0) return;
 
-  // Pick the latest entry (usually last item)
   const drone = droneData[droneData.length - 1];
 
   const lat = drone.latitude;
   const lon = drone.longitude;
+  const timestamp = drone.timestamp;
+  console.log("human_detected:", drone.human_detected);
 
-  // 2. Build image file name from your backend timestamp
-  // You MUST get this timestamp from Flask (passed or returned)
-  const timestamp = drone.timestamp || "unknown";  
-  const rawTimestamp = drone.timestamp || null;
 
-//let imageUrl = "/photos/unknown.jpg";
-
-  const date = new Date(rawTimestamp);
-
-  const MM = String(date.getMonth() + 1).padStart(2, "0");
-  const DD = String(date.getDate()).padStart(2, "0");
-  const HH = String(date.getHours()).padStart(2, "0");
-  const mm = String(date.getMinutes()).padStart(2, "0");
-  const ss = String(date.getSeconds()).padStart(2, "0");
-
-  const filename = `${MM}-${DD}-${HH}-${mm}-${ss}.jpg`;
-  const imageUrl = `http://127.0.0.1:5000/foto/${filename}`;
-
-  
-// 1. Icon
+  // ===============================
+  // 2. DRONE ICON (REAL-TIME)
+  // ===============================
   const droneIcon = L.icon({
-  iconUrl: '/assets/images/drone.png',
-  iconSize: [32, 32],
-  iconAnchor: [16, 32],
-  popupAnchor: [0, -32]
-});
+    iconUrl: '/assets/images/drone.png',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
+  });
 
-// // 2. GeoJSON feature
-// const feature = {
-//   id: draw.getFeatureId(),
-//   type: "Feature",
-//   geometry: {
-//     type: "Point",
-//     coordinates: [lon, lat], // GeoJSON = [lon, lat]
-//   },
-//   properties: {
-//     mode: "point",
-//   },
-// };
+  if (!droneMarker) {
+    // pertama kali
+    droneMarker = L.marker([lat, lon], { icon: droneIcon })
+      .addTo(map);
+  } else {
+    // update posisi
+    droneMarker.setLatLng([lat, lon]);
+  }
 
-
-
-  // 3. Create GeoJSON point
-  const feature = [{
-    id: draw.getFeatureId(),
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [lon, lat],
-    },
-    properties: {
-      mode: "point",
-    },
-  }];
-
-  // 3. Render GeoJSON as icon
-  L.geoJSON(feature, {
-    pointToLayer: (geoJsonPoint, latlng) => {
-      return L.marker(latlng, { icon: droneIcon });
-    }
-  }).addTo(map);
-
-  // 4. Add to map with popup
-  L.geoJSON(feature, {
-    onEachFeature: function (feature, layer) {
-      layer.on("click", function () {
-        const content = `
-          <div style="text-align:center;">
-            <p><strong>${timestamp}</strong> — Human Detected</p>
-            <img src="${imageUrl}" alt="Popup Image" style="width:200px; border-radius:8px;" />
-          </div>
-        `;
-        L.popup()
-          .setLatLng(layer.getLatLng())
-          .setContent(content)
-          .openOn(map);
-      });
-    },
-  }).addTo(map);
-
-  // 5. Move map to the drone coordinate
   map.setView([lat, lon], 19);
 
-  draw.clear();
+  // ===============================
+  // 3. JIKA ADA DETEKSI MANUSIA
+  // (INI POINT — TIDAK DIUBAH)
+  // ===============================
+if (Number(drone.human_detected) === 1) {
+
+    // build image filename
+    const date = new Date(timestamp);
+    const MM = String(date.getMonth() + 1).padStart(2, "0");
+    const DD = String(date.getDate()).padStart(2, "0");
+    const HH = String(date.getHours()).padStart(2, "0");
+    const mm = String(date.getMinutes()).padStart(2, "0");
+    const ss = String(date.getSeconds()).padStart(2, "0");
+
+    const filename = `${MM}-${DD}-${HH}-${mm}-${ss}.jpg`;
+    const imageUrl = `http://127.0.0.1:5000/foto/${filename}`;
+
+    // ===============================
+    // 4. GEOJSON POINT DETEKSI (HISTORY)
+    // ===============================
+    const feature = [{
+      id: draw.getFeatureId(),
+      type: "Feature",
+      geometry: {
+        type: "Point",
+        coordinates: [lon, lat],
+      },
+      properties: {
+        mode: "point"
+      },
+    }];
+
+    L.geoJSON(feature, {
+      onEachFeature: function (feature, layer) {
+        layer.on("click", function () {
+          const content = `
+            <div style="text-align:center;">
+              <p><strong>${timestamp}</strong> — Human Detected</p>
+              <img src="${imageUrl}" style="width:200px; border-radius:8px;" />
+            </div>
+          `;
+          L.popup()
+            .setLatLng(layer.getLatLng())
+            .setContent(content)
+            .openOn(map);
+        });
+      },
+    }).addTo(detectionLayer);
+  }
 }
 
 
@@ -404,7 +494,7 @@ const motor4Button = document.querySelector("#motor4Button");
 motor4Button.addEventListener("click", () => command("testmotor,4,15"));
 
 window.addEventListener("DOMContentLoaded", () => {
-  // setInterval(fetchData, 3000);
-  // setInterval(cobain,10000);
-  cobain();
+  setInterval(fetchData, 3000);
+  setInterval(cobain,3000);
+  //cobain();
 });
