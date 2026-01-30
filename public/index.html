@@ -21,7 +21,7 @@
 
 <body class="bg-white bg-opacity-0">
   <div x-data="setup()" x-init="$refs.loading.classList.add('hidden');" @resize.window="watchScreen()">
-    <div class="flex h-screen antialiased text-gray-900 bg-blue-gray-100 dark:bg-gray-50 bg-opacity-5 dark:text-light">
+    <div class="flex h-screen antialiased text-gray-900 bg-blue-gray-100 dark:bg-gray-50 bg-opacity-5 dark:text-light overflow-hidden">
       <!-- Loading screen -->
       <div x-ref="loading"
         class="fixed inset-0 z-50 flex items-center justify-center text-2xl font-semibold text-white bg-primary-darker">
@@ -195,213 +195,283 @@
             <button type="button" class="py-2.5 px-5 me-2 mb-2 text-sm font-medium text-gray-900 focus:outline-none bg-white rounded-full border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700" id="motor4Button">Propeller 4</button>
           </section> -->
 
-<aside class="w-80 h-screen bg-white overflow-hidden">
+<aside class="w-80 h-screen overflow-hidden flex-shrink-0">
   <section
     x-show="currentSidebarTab == 'messagesTab'"
-    class="h-full px-4 py-6 overflow-y-auto">          <!-- Header -->
-          <div class="mb-4">
-            <h2 class="text-2xl font-bold text-gray-800">Drone Control Panel</h2>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Manage arming and propeller controls</p>
+    id="controlPanelContainer"
+    class="h-full px-4 py-6 overflow-y-auto"
+    style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+    
+    <!-- Control Panel Header -->
+    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
+      <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+        <svg style="width: 22px; height: 22px; color: white;" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2L8 6H5v3l-4 4 4 4v3h3l4 4 4-4h3v-3l4-4-4-4V6h-3l-4-4zm0 4.5L14.5 9H16v1.5L18.5 12 16 14.5V16h-1.5L12 18.5 9.5 16H8v-1.5L5.5 12 8 9.5V8h1.5L12 6.5z"/>
+        </svg>
+      </div>
+      <div>
+        <h2 style="font-size: 18px; font-weight: 700; color: #1e293b;">Drone Control</h2>
+        <p style="font-size: 12px; color: #64748b;">Flight Management</p>
+      </div>
+    </div>
+
+    <!-- Status Card -->
+    <div style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+        <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Status</span>
+        <span id="statusIndicator" style="display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: #ef4444;">
+          <span style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 2s infinite;"></span>
+          DISARMED
+        </span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+        <button id="armButton" onclick="command('arm')" style="padding: 12px 16px; background: linear-gradient(135deg, #22c55e, #16a34a); border: none; border-radius: 10px; color: white; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(34, 197, 94, 0.3);">
+          ARM
+        </button>
+        <button id="disarmButton" onclick="command('disarm')" style="padding: 12px 16px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 10px; color: white; font-size: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);">
+          DISARM
+        </button>
+      </div>
+    </div>
+
+    <!-- Motors Card -->
+    <div style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Motors</span>
+        <span style="font-size: 10px; font-weight: 500; color: #3b82f6; background: #eff6ff; padding: 3px 8px; border-radius: 6px;">4 MOTORS</span>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+        <button id="cw1" onclick="command('cw1')" style="padding: 20px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+          <div style="font-size: 20px; margin-bottom: 4px;">⟳</div>
+          <div style="font-size: 11px; font-weight: 600; color: #475569;">CW 1</div>
+        </button>
+        <button id="ccw1" onclick="command('ccw1')" style="padding: 20px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+          <div style="font-size: 20px; margin-bottom: 4px;">⟲</div>
+          <div style="font-size: 11px; font-weight: 600; color: #475569;">CCW 1</div>
+        </button>
+        <button id="ccw2" onclick="command('ccw2')" style="padding: 20px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+          <div style="font-size: 20px; margin-bottom: 4px;">⟲</div>
+          <div style="font-size: 11px; font-weight: 600; color: #475569;">CCW 2</div>
+        </button>
+        <button id="cw2" onclick="command('cw2')" style="padding: 20px; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s;">
+          <div style="font-size: 20px; margin-bottom: 4px;">⟳</div>
+          <div style="font-size: 11px; font-weight: 600; color: #475569;">CW 2</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- GPS Navigation Card -->
+    <div style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 28px; height: 28px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+            <svg style="width: 14px; height: 14px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+            </svg>
           </div>
+          <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">GPS Navigation</span>
+        </div>
+        <span style="font-size: 10px; font-weight: 500; color: #f97316; background: #fff7ed; padding: 3px 8px; border-radius: 6px;">WAYPOINT</span>
+      </div>
+      
+      <form id="gpsForm">
+        <!-- Latitude Input -->
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+            Latitude
+          </label>
+          <input type="text" id="latitude" name="latitude" inputmode="decimal" required
+                 placeholder="e.g. -6.9734"
+                 style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; background: #f8fafc; box-sizing: border-box;">
+        </div>
 
-          <!-- Arming Section -->
-          <div class="mb-4">
-            <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-4">System Status</h3>
-            <div class="flex items-center space-x-4 mb-4">
-              <div class="status-indicator w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
-              <span class="text-sm font-medium text-gray-600 dark:text-gray-400" id="statusText">Currently Disarmed</span>
-            </div>
-            <div class="flex space-x-2">
-              <button type="button" id="armButton" 
-                      class="flex-1 px-6 py-3.5 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-gray-600 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-green-300 dark:focus:ring-green-900">
-                <div class="flex items-center justify-center text-xs h-12">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  Arm
-                </div>
-              </button>
-              <button type="button" id="disarmButton" 
-                      class="flex-1 px-6 py-3.5 bg-gradient-to-r from-red-500 to-rose-600 hover:from-red-600 hover:to-rose-700 text-gray-600 font-medium rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 transform hover:-translate-y-0.5 focus:outline-none focus:ring-4 focus:ring-red-300 dark:focus:ring-red-900">
-                <div class="flex items-center justify-center text-xs h-12">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                  </svg>
-                  Disarm
-                </div>
-              </button>
-            </div>
+        <!-- Longitude Input -->
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+            Longitude
+          </label>
+          <input type="text" id="longitude" name="longitude" inputmode="decimal" required
+                 placeholder="e.g. 107.6098"
+                 style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; background: #f8fafc; box-sizing: border-box;">
+        </div>
+
+        <!-- Altitude Input -->
+        <div style="margin-bottom: 16px;">
+          <label style="display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+            Altitude (meters)
+          </label>
+          <input type="text" id="altitude" name="altitude" inputmode="numeric" required
+                 placeholder="e.g. 120"
+                 style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; background: #f8fafc; box-sizing: border-box;">
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit"
+                style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f97316, #ea580c); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+            <svg style="width: 18px; height: 18px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+            </svg>
+            <span style="color: white; font-size: 13px; font-weight: 600;">FLY TO WAYPOINT</span>
           </div>
+        </button>
+      </form>
+    </div>
 
-          <!-- Propeller Controls -->
-          <div class="py-6">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-lg font-semibold text-gray-700 dark:text-gray-300">Propeller Controls</h3>
-              <span class="px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 rounded-full">
-                4 Motors
-              </span>
-            </div>
-            
-            <div class="space-y-2">
-              <button type="button" id="motor1Button" 
-                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300">
-                <div class="text-center">
-                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Front Left</span>
-                </div>
-              </button>
-
-              <button type="button" id="motor2Button" 
-                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
-                <div class="text-center">
-                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Front Right</span>
-                </div>
-              </button>
-
-              <button type="button" id="motor3Button" 
-                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
-                <div class="text-center">
-                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rear Left</span>
-                </div>
-              </button>
-
-              <button type="button" id="motor4Button" 
-                      class="w-20 h-20 group relative p-5 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
-                <div class="text-center">
-                  <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-gradient-to-br from-blue-100 to-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                    <svg class="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                    </svg>
-                  </div>
-                  <span class="text-xs text-gray-500 dark:text-gray-400 mt-1">Rear Right</span>
-                </div>
-              </button>
-            </div>
-          </div>
-
-          <!-- GPS Coordinates Input Section -->
-          <div class="border-t border-gray-200">
-          <div class="border-t border-gray-200 bg-white rounded-2xl p-2">
-            <div class="flex items-center justify-between mb-6">
-              <h3 class="text-lg font-semibold text-gray-700">
-                GPS Coordinates
-              </h3>
-              <span class="py-1 text-xs font-medium bg-purple-100 text-purple-800 rounded-full">
-                Waypoint
-              </span>
-            </div>
-
-            <!-- FORM -->
-            <form id="gpsForm" class="space-y-2">
-              <!-- Latitude -->
-              <div>
-                <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">
-                  Latitude
-                </label>
-                <div class="relative">
-                  <input
-                    type="text"
-                    id="latitude"
-                    name="latitude"
-                    inputmode="decimal"
-                    pattern="^-?\d+(\.\d+)?$"
-                    required
-                    class="pl-10 w-full px-4 py-3
-                          bg-white border border-gray-300
-                          rounded-xl text-gray-800
-                          focus:ring-2 focus:ring-purple-500
-                          focus:border-purple-500 transition-all"
-                    placeholder="contoh: -6.9734">
-                </div>
-              </div>
-
-              <!-- Longitude -->
-              <div>
-                <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">
-                  Longitude
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  </div>
-                  <input
-                    type="text"
-                    id="longitude"
-                    name="longitude"
-                    inputmode="decimal"
-                    pattern="^-?\d+(\.\d+)?$"
-                    required
-                    class="pl-10 w-full px-4 py-3
-                          bg-white border border-gray-300
-                          rounded-xl text-gray-800
-                          focus:ring-2 focus:ring-purple-500
-                          focus:border-purple-500 transition-all"
-                    placeholder="contoh: 107.6098">
-                </div>
-              </div>
-
-              <!-- Altitude -->
-              <div>
-                <label for="altitude" class="block text-sm font-medium text-gray-700 mb-1">
-                  Altitude (meters)
-                </label>
-                <div class="relative">
-                  <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  </div>
-                  <input
-                    type="text"
-                    id="altitude"
-                    name="altitude"
-                    inputmode="numeric"
-                    pattern="^\d+(\.\d+)?$"
-                    required
-                    class="pl-10 w-full px-4 py-3
-                          bg-white border border-gray-300
-                          rounded-xl text-gray-800
-                          focus:ring-2 focus:ring-purple-500
-                          focus:border-purple-500 transition-all"
-                    placeholder="contoh: 120">
-                </div>
-              </div>
-
-              <!-- SUBMIT -->
-              <button
-                type="submit"
-                class="w-full mt-6 px-6 py-3 group relative p-5 bg-gradient-to-br from-gray-50 to-white border border-gray-200 rounded-2xl shadow-sm hover:shadow-lg transition-all duration-300 hover:border-blue-400 dark:hover:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100 dark:focus:ring-blue-900">
-                <div class="flex items-center justify-centerv text-sm h-12">
-                  <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M5 13l4 4L19 7" />
-                  </svg>
-                  Submit Waypoint
-                </div>
-              </button>
-            </form>
-          </div>
-
-
-        </section>
-      </aside>
-
-          <section x-show="currentSidebarTab == 'notificationsTab'" class="px-4 py-6">
-            <h2 class="text-xl">Notifications</h2>
-          </section>
+    <style>
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+    </style>
+  </section>
+  
+  <section x-show="currentSidebarTab == 'notificationsTab'" class="h-full px-4 py-6 overflow-y-auto" style="background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);">
+    <!-- Log Header -->
+    <div class="mb-4">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+          <svg style="width: 18px; height: 18px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/>
+          </svg>
+        </div>
+        <div>
+          <h2 style="font-size: 18px; font-weight: 700; color: #1e293b;">Flight Log</h2>
+          <p style="font-size: 11px; color: #64748b;">System events & activities</p>
         </div>
       </div>
-      <div class="flex flex-col flex-1">
+      
+      <!-- Clear Log Button -->
+      <button onclick="clearLog()" style="width: 100%; padding: 8px; background: #f1f5f9; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 12px; color: #64748b; cursor: pointer; transition: all 0.2s;"
+              onmouseover="this.style.background='#e2e8f0'"
+              onmouseout="this.style.background='#f1f5f9'">
+        Clear Log
+      </button>
+    </div>
+    
+    <!-- Log Container -->
+    <div id="logContainer" style="background: white; border-radius: 12px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); max-height: calc(100vh - 180px); overflow-y: auto;">
+      <!-- Log entries will be added here -->
+      <div class="log-entry" style="padding: 10px; border-bottom: 1px solid #f1f5f9;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%;"></span>
+          <span style="font-size: 11px; color: #64748b;">System</span>
+          <span style="font-size: 10px; color: #94a3b8; margin-left: auto;">--:--:--</span>
+        </div>
+        <p style="font-size: 12px; color: #334155; margin: 0;">Log initialized. Waiting for events...</p>
+      </div>
+    </div>
+    
+    <script>
+      // Log functions
+      function addLog(message, type = 'info') {
+        const logContainer = document.getElementById('logContainer');
+        const now = new Date();
+        const time = now.toLocaleTimeString('en-US', { hour12: false });
+        
+        const colors = {
+          info: '#3b82f6',
+          success: '#10b981',
+          warning: '#f59e0b',
+          error: '#ef4444'
+        };
+        
+        const labels = {
+          info: 'Info',
+          success: 'Success',
+          warning: 'Warning',
+          error: 'Error'
+        };
+        
+        const entry = document.createElement('div');
+        entry.className = 'log-entry';
+        entry.style.cssText = 'padding: 10px; border-bottom: 1px solid #f1f5f9; animation: fadeIn 0.3s ease;';
+        entry.innerHTML = `
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span style="width: 8px; height: 8px; background: ${colors[type]}; border-radius: 50%;"></span>
+            <span style="font-size: 11px; color: #64748b;">${labels[type]}</span>
+            <span style="font-size: 10px; color: #94a3b8; margin-left: auto;">${time}</span>
+          </div>
+          <p style="font-size: 12px; color: #334155; margin: 0;">${message}</p>
+        `;
+        
+        logContainer.insertBefore(entry, logContainer.firstChild);
+        
+        // Keep only last 50 entries
+        while (logContainer.children.length > 50) {
+          logContainer.removeChild(logContainer.lastChild);
+        }
+      }
+      
+      function clearLog() {
+        const logContainer = document.getElementById('logContainer');
+        logContainer.innerHTML = `
+          <div class="log-entry" style="padding: 10px; border-bottom: 1px solid #f1f5f9;">
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+              <span style="width: 8px; height: 8px; background: #3b82f6; border-radius: 50%;"></span>
+              <span style="font-size: 11px; color: #64748b;">System</span>
+              <span style="font-size: 10px; color: #94a3b8; margin-left: auto;">${new Date().toLocaleTimeString('en-US', { hour12: false })}</span>
+            </div>
+            <p style="font-size: 12px; color: #334155; margin: 0;">Log cleared.</p>
+          </div>
+        `;
+      }
+      
+      // Make addLog globally available
+      window.addLog = addLog;
+      window.clearLog = clearLog;
+    </script>
+    
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-5px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+    </style>
+  </section>
+</aside>
+
+<script>
+  // Initialize GPS form handler
+  document.addEventListener('DOMContentLoaded', function() {
+    const gpsForm = document.getElementById("gpsForm");
+    if (gpsForm) {
+      gpsForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const lat = document.getElementById("latitude").value.trim();
+        const lng = document.getElementById("longitude").value.trim();
+        const alt = document.getElementById("altitude").value.trim();
+
+        if (!lat || !lng || !alt) {
+          alert("All fields are required");
+          return;
+        }
+
+        const cmd = `goto,${alt},${lat},${lng}`;
+        console.log("Sending goto command:", cmd);
+        
+        // Call the command function from script.js
+        if (typeof command === 'function') {
+          command(cmd);
+          if (typeof addLog === 'function') {
+            addLog(`Waypoint sent: Lat ${lat}, Lng ${lng}, Alt ${alt}m`, 'success');
+          }
+        } else {
+          console.error('command function not available');
+          alert('Command function not available. Make sure script.js is loaded.');
+        }
+        
+        gpsForm.reset();
+      });
+    }
+  });
+</script>
+
+        </div>
+      </div>
+      <div class="flex flex-col flex-1 min-w-0 h-screen overflow-hidden relative">
         <header class="absolute top-0 right-0 flex items-center justify-between flex-shrink-0 p-4 z-10">
           <form action="#" class="flex-1">
             <!--  -->
@@ -497,7 +567,7 @@
 
 
         <!-- Map Section -->
-        <div id="map" class="w-full h-full">
+        <div id="map" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 1;">
         </div>
 
       </div>

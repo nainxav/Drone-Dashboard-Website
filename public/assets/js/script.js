@@ -22,6 +22,16 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
 }).addTo(map);
 
+// Fix map size after container is ready
+setTimeout(function() {
+  map.invalidateSize();
+}, 100);
+
+// Also fix on window resize
+window.addEventListener('resize', function() {
+  map.invalidateSize();
+});
+
 const behaviorConfig = {
   coordinatePrecision: 6,
   mode: "polygon",
@@ -519,25 +529,25 @@ motor3Button.addEventListener("click", () => command("testmotor,3,15"));
 const motor4Button = document.querySelector("#motor4Button");
 motor4Button.addEventListener("click", () => command("testmotor,4,15"));
 
-const gpsForm = document.getElementById("gpsForm");
-gpsForm.addEventListener("submit", (e) => {
-  e.preventDefault();
+// const gpsForm = document.getElementById("gpsForm");
+// gpsForm.addEventListener("submit", (e) => {
+//   e.preventDefault();
 
-  const latitude  = document.getElementById("latitude").value.trim();
-  const longitude = document.getElementById("longitude").value.trim();
-  const altitude  = document.getElementById("altitude").value.trim();
+//   const latitude  = document.getElementById("latitude").value.trim();
+//   const longitude = document.getElementById("longitude").value.trim();
+//   const altitude  = document.getElementById("altitude").value.trim();
 
-  if (!latitude || !longitude || !altitude) {
-    alert("Semua field wajib diisi");
-    return;
-  }
+//   if (!latitude || !longitude || !altitude) {
+//     alert("Semua field wajib diisi");
+//     return;
+//   }
 
-  const cmd = `goto,${altitude},${latitude},${longitude}`;
+//   const cmd = `goto,${altitude},${latitude},${longitude}`;
 
-  console.log("Send command:", cmd);
-  command(cmd);
-  gpsForm.reset();
-});
+//   console.log("Send command:", cmd);
+//   command(cmd);
+//   gpsForm.reset();
+// });
 
 
 window.addEventListener("DOMContentLoaded", () => {

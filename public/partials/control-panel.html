@@ -1,0 +1,227 @@
+<!-- Drone Control Panel Partial -->
+<!-- This file is loaded by both index.html and dashboard.html -->
+
+<!-- Header -->
+<div class="mb-6 text-center">
+  <div style="width: 48px; height: 48px; margin: 0 auto 12px; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);">
+    <!-- Drone Icon -->
+    <svg style="width: 26px; height: 26px;" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Propellers -->
+      <circle cx="5" cy="5" r="3"/>
+      <circle cx="19" cy="5" r="3"/>
+      <circle cx="5" cy="19" r="3"/>
+      <circle cx="19" cy="19" r="3"/>
+      <!-- Arms -->
+      <path d="M7.5 7.5L10 10"/>
+      <path d="M16.5 7.5L14 10"/>
+      <path d="M7.5 16.5L10 14"/>
+      <path d="M16.5 16.5L14 14"/>
+      <!-- Body -->
+      <rect x="9" y="9" width="6" height="6" rx="1" fill="white"/>
+      <!-- Camera -->
+      <circle cx="12" cy="12" r="1.5" fill="#3b82f6"/>
+    </svg>
+  </div>
+  <h2 style="font-size: 20px; font-weight: 700; color: #1e293b; margin-bottom: 4px;">Drone Control</h2>
+  <p style="font-size: 12px; color: #64748b;">System Management</p>
+</div>
+
+<!-- Status Card -->
+<div style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+    <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Status</span>
+    <div class="status-indicator" style="display: flex; align-items: center; gap: 6px; background: #fef2f2; padding: 4px 10px; border-radius: 20px;">
+      <div style="width: 8px; height: 8px; background: #ef4444; border-radius: 50%; animation: pulse 2s infinite;"></div>
+      <span id="statusText" style="font-size: 11px; font-weight: 600; color: #dc2626;">DISARMED</span>
+    </div>
+  </div>
+  
+  <!-- Arm/Disarm Buttons -->
+  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+    <button type="button" id="armButton" 
+            style="padding: 14px 12px; background: linear-gradient(135deg, #22c55e, #16a34a); border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(34, 197, 94, 0.4)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(34, 197, 94, 0.3)';">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <svg style="width: 18px; height: 18px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
+        </svg>
+        <span style="color: white; font-size: 13px; font-weight: 600;">ARM</span>
+      </div>
+    </button>
+    <button type="button" id="disarmButton" 
+            style="padding: 14px 12px; background: linear-gradient(135deg, #ef4444, #dc2626); border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(239, 68, 68, 0.4)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(239, 68, 68, 0.3)';">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <svg style="width: 18px; height: 18px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+        <span style="color: white; font-size: 13px; font-weight: 600;">DISARM</span>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- Motors Card -->
+<div style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Motors</span>
+    <span style="font-size: 10px; font-weight: 500; color: #3b82f6; background: #eff6ff; padding: 3px 8px; border-radius: 6px;">4 ACTIVE</span>
+  </div>
+  
+  <!-- Drone Visual Layout -->
+  <div style="position: relative; padding: 8px;">
+    <!-- Drone body indicator -->
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); border-radius: 8px; display: flex; align-items: center; justify-content: center; z-index: 1;">
+      <svg style="width: 20px; height: 20px; color: #64748b;" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 2L4.5 20.29l.71.71L12 18l6.79 3 .71-.71z"/>
+      </svg>
+    </div>
+    
+    <!-- Motors Grid -->
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 40px 20px;">
+      <!-- Motor 1 - Front Left -->
+      <button type="button" id="motor1Button" 
+              style="padding: 12px; background: linear-gradient(135deg, #f0f9ff, #e0f2fe); border: 2px solid #bae6fd; border-radius: 14px; cursor: pointer; transition: all 0.3s;"
+              onmouseover="this.style.borderColor='#38bdf8'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(56, 189, 248, 0.3)';"
+              onmouseout="this.style.borderColor='#bae6fd'; this.style.transform='scale(1)'; this.style.boxShadow='none';">
+        <div style="text-align: center;">
+          <div style="width: 32px; height: 32px; margin: 0 auto 6px; background: linear-gradient(135deg, #0ea5e9, #0284c7); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);">
+            <span style="color: white; font-size: 11px; font-weight: 700;">1</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #0369a1;">Front Left</span>
+        </div>
+      </button>
+
+      <!-- Motor 2 - Front Right -->
+      <button type="button" id="motor2Button" 
+              style="padding: 12px; background: linear-gradient(135deg, #fdf4ff, #fae8ff); border: 2px solid #f0abfc; border-radius: 14px; cursor: pointer; transition: all 0.3s;"
+              onmouseover="this.style.borderColor='#e879f9'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(232, 121, 249, 0.3)';"
+              onmouseout="this.style.borderColor='#f0abfc'; this.style.transform='scale(1)'; this.style.boxShadow='none';">
+        <div style="text-align: center;">
+          <div style="width: 32px; height: 32px; margin: 0 auto 6px; background: linear-gradient(135deg, #d946ef, #a855f7); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(217, 70, 239, 0.4);">
+            <span style="color: white; font-size: 11px; font-weight: 700;">2</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #a21caf;">Front Right</span>
+        </div>
+      </button>
+
+      <!-- Motor 3 - Rear Left -->
+      <button type="button" id="motor3Button" 
+              style="padding: 12px; background: linear-gradient(135deg, #fefce8, #fef9c3); border: 2px solid #fde047; border-radius: 14px; cursor: pointer; transition: all 0.3s;"
+              onmouseover="this.style.borderColor='#facc15'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(250, 204, 21, 0.3)';"
+              onmouseout="this.style.borderColor='#fde047'; this.style.transform='scale(1)'; this.style.boxShadow='none';">
+        <div style="text-align: center;">
+          <div style="width: 32px; height: 32px; margin: 0 auto 6px; background: linear-gradient(135deg, #eab308, #ca8a04); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);">
+            <span style="color: white; font-size: 11px; font-weight: 700;">3</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #a16207;">Rear Left</span>
+        </div>
+      </button>
+
+      <!-- Motor 4 - Rear Right -->
+      <button type="button" id="motor4Button" 
+              style="padding: 12px; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 2px solid #86efac; border-radius: 14px; cursor: pointer; transition: all 0.3s;"
+              onmouseover="this.style.borderColor='#4ade80'; this.style.transform='scale(1.05)'; this.style.boxShadow='0 4px 12px rgba(74, 222, 128, 0.3)';"
+              onmouseout="this.style.borderColor='#86efac'; this.style.transform='scale(1)'; this.style.boxShadow='none';">
+        <div style="text-align: center;">
+          <div style="width: 32px; height: 32px; margin: 0 auto 6px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(34, 197, 94, 0.4);">
+            <span style="color: white; font-size: 11px; font-weight: 700;">4</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 500; color: #15803d;">Rear Right</span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- GPS Navigation Card -->
+<div style="background: white; border-radius: 16px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);">
+  <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="width: 28px; height: 28px; background: linear-gradient(135deg, #f97316, #ea580c); border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+        <svg style="width: 14px; height: 14px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/>
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+      </div>
+      <span style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">GPS Navigation</span>
+    </div>
+    <span style="font-size: 10px; font-weight: 500; color: #f97316; background: #fff7ed; padding: 3px 8px; border-radius: 6px;">WAYPOINT</span>
+  </div>
+  
+  <form id="gpsForm">
+    <!-- Latitude Input -->
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+        Latitude
+      </label>
+      <div style="position: relative;">
+        <input type="text" id="latitude" name="latitude" inputmode="decimal" pattern="^-?\d+(\.\d+)?$" required
+               placeholder="e.g. -6.9734"
+               style="width: 100%; padding: 12px 12px 12px 36px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; background: #f8fafc; transition: all 0.2s; box-sizing: border-box;"
+               onfocus="this.style.borderColor='#3b82f6'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';"
+               onblur="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.boxShadow='none';">
+        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Longitude Input -->
+    <div style="margin-bottom: 12px;">
+      <label style="display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+        Longitude
+      </label>
+      <div style="position: relative;">
+        <input type="text" id="longitude" name="longitude" inputmode="decimal" pattern="^-?\d+(\.\d+)?$" required
+               placeholder="e.g. 107.6098"
+               style="width: 100%; padding: 12px 12px 12px 36px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; background: #f8fafc; transition: all 0.2s; box-sizing: border-box;"
+               onfocus="this.style.borderColor='#3b82f6'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';"
+               onblur="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.boxShadow='none';">
+        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Altitude Input -->
+    <div style="margin-bottom: 16px;">
+      <label style="display: block; font-size: 11px; font-weight: 600; color: #475569; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px;">
+        Altitude (meters)
+      </label>
+      <div style="position: relative;">
+        <input type="text" id="altitude" name="altitude" inputmode="numeric" pattern="^\d+(\.\d+)?$" required
+               placeholder="e.g. 120"
+               style="width: 100%; padding: 12px 12px 12px 36px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-weight: 500; color: #1e293b; background: #f8fafc; transition: all 0.2s; box-sizing: border-box;"
+               onfocus="this.style.borderColor='#3b82f6'; this.style.background='white'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)';"
+               onblur="this.style.borderColor='#e2e8f0'; this.style.background='#f8fafc'; this.style.boxShadow='none';">
+        <svg style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 16px; height: 16px; color: #94a3b8;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"/>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Submit Button -->
+    <button type="submit"
+            style="width: 100%; padding: 14px; background: linear-gradient(135deg, #f97316, #ea580c); border: none; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(249, 115, 22, 0.4)';"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(249, 115, 22, 0.3)';">
+      <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+        <svg style="width: 18px; height: 18px; color: white;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
+        </svg>
+        <span style="color: white; font-size: 13px; font-weight: 600;">FLY TO WAYPOINT</span>
+      </div>
+    </button>
+  </form>
+</div>
+
+<!-- Pulse animation -->
+<style>
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+</style>

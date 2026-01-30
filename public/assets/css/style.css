@@ -1,13 +1,22 @@
 html,
 body {
   height: 100%;
+  width: 100%;
   margin: 0;
+  padding: 0;
   background-color: #050709;
   overflow: hidden;
 }
 
 #map {
   z-index: 1;
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Fix Leaflet tiles loading issue */
+.leaflet-container {
   height: 100%;
   width: 100%;
+  background: #1a1a2e;
 }
