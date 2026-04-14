@@ -1,4 +1,4 @@
-# PrakIOT - Drone Data Monitoring & Control System
+# Drone Data Monitoring & Control System
 
 A web-based platform for **real-time drone telemetry monitoring and remote control** using **Pixhawk 2.4.8** flight controller and **ArduPilot** firmware. This system allows users to monitor flight data and send control commands directly from a browser, functioning as a lightweight ground control station.
 
