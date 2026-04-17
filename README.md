@@ -306,7 +306,6 @@ prakIOT/
 |   |-- index.html              # Main page with map view
 |   |-- dashboard.html          # Dashboard with telemetry cards
 |   |-- cards.html              # Telemetry cards component
-|   |-- chart.html              # Chart visualization
 |   +-- assets/
 |       |-- css/
 |       |   |-- tailwind.css    # Compiled TailwindCSS
